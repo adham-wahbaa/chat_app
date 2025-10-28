@@ -184,10 +184,10 @@ class SignUpScreen extends StatelessWidget {
                                 await AuthService.register(
                                   _emailController.text,
                                    _passwordController.text,
-                                    _userNameController.text
+                                    _userNameController.text,context
                                   );
 
-                                  Navigator.push(context, MaterialPageRoute(builder:(context) => EmailVerificationScreen(),));
+                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:(context) => EmailVerificationScreen(),), (route) => false,);
                                 
                               };
                             },

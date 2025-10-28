@@ -1,8 +1,9 @@
 import 'package:chat_app/constants/app_colors.dart';
-import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/services/chat_service.dart';
 import 'package:chat_app/view_model/app_brain.dart';
+import 'package:chat_app/views/sign_in_screen.dart';
 import 'package:chat_app/widgets/user_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/views/private_chat_screen.dart';
 
@@ -28,7 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: AppColors.appBarBackground,
         iconTheme: const IconThemeData(color: Colors.white),
         actionsPadding: const EdgeInsets.all(12),
-        actions: const [Icon(Icons.search), Icon(Icons.more_vert)],
+        actions: [const Icon(Icons.search), IconButton(onPressed:(){FirebaseAuth.instance.signOut();
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> SignInScreen()), (route) => false);
+          } ,icon: const Icon(Icons.more_vert))],
         toolbarHeight: 100,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(

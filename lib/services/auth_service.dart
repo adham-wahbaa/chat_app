@@ -26,7 +26,7 @@ class AuthService {
 
   }
 
-  static Future<void> register(String email,String password,String userName)async{
+  static Future<void> register(String email,String password,String userName,context)async{
 
     try{
 
@@ -43,7 +43,9 @@ class AuthService {
       );
 
 
-    }catch(e){
+    }catch(e)
+{    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+
 
     }
 
@@ -56,7 +58,7 @@ class AuthService {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
 
       if(credential.user!.emailVerified){
-        Navigator.push(context, MaterialPageRoute(builder:(context) => HomeScreen(),));
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:(context) => HomeScreen(),) , (route) => false);
       }else{
         Navigator.push(context, MaterialPageRoute(builder:(context) => EmailVerificationScreen(),));
       }

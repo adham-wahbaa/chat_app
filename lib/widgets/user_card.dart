@@ -13,7 +13,7 @@ class UserCard extends StatelessWidget {
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
+        color: AppColors.chatBubbleBackground,
       ),
       child: Row(
         children: [
@@ -44,17 +44,18 @@ class UserCard extends StatelessWidget {
           ),
           const SizedBox(width: 10,),
           Column(
-            spacing: 5,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(model.username,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+              Text(model.username,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.white),),
+              const SizedBox(height: 5,),
               Row(
                 children: [
-                  Icon(Icons.mail_outline,color: Colors.grey.shade600,size: 15,),
+                  Icon(Icons.mail_outline,color: Colors.grey.shade400,size: 15,),
                   const SizedBox(width: 5,),
-                  Text(model.email,style: TextStyle(color: Colors.grey.shade600),)
+                  Text(model.email,style: TextStyle(color: Colors.grey.shade400),)
                 ],
               ),
+              const SizedBox(height: 5,),
               Row(
                 children: [
                   Container(
@@ -66,7 +67,7 @@ class UserCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8,),
-                  Text("Available to chat")
+                  Text("Available to chat", style: TextStyle(color: Colors.grey.shade400),)
                 ],
               )
             ],
@@ -74,14 +75,15 @@ class UserCard extends StatelessWidget {
           Spacer(),
           Column(
             children: [
-              Text("now"),
+              Text("now", style: TextStyle(color: Colors.grey.shade400),),
+              const SizedBox(height: 5,),
               Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.brightGreen
                 ),
-                child: Icon(Icons.chat_bubble,color: Colors.white,size: 15,),
+                child: Icon(Icons.chat_bubble,color: AppColors.background,size: 15,),
               )
             ],
           )

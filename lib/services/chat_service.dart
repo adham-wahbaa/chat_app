@@ -3,6 +3,7 @@ import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/view_model/app_brain.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class ChatService {
   static void fetchUsers() async {
@@ -10,7 +11,8 @@ class ChatService {
     final users = snapshot.docs
         .where(
           (document) =>
-              FirebaseAuth.instance.currentUser!.uid != document.data()["id"],
+              FirebaseAuth.instance.currentUser!.uid != document.data()["id"] &&
+              document.data()["isVerified"] == true,
         )
         .map((document) => UserModel.fromMap(document.data()))
         .toList();
@@ -46,7 +48,7 @@ class ChatService {
         .collection('chats')
         .doc(chatId)
         .collection('messages')
-        .add(message.toJson());
+        .doc(message.id).set(message.toJson());
   }
 
   static Stream<List<MessageModel>> getMessages(String chatId) {
@@ -57,9 +59,25 @@ class ChatService {
         .orderBy('timeStamp', descending: true)
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            return MessageModel.fromJson(doc.data());
-          }).toList();
-        });
+      return snapshot.docs.map((doc) {
+        return MessageModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+  static Future<void> deletemessage(String chatId, String id,context) async {
+    try{
+    print("deleting message with id: $id from chat: $chatId");
+      await FirebaseFirestore.instance
+          .collection('chats')
+          .doc(chatId)
+          .collection('messages')
+          .doc(id)
+          .delete();
+    }on FirebaseException
+      catch (e) {
+     print("Failed to delete message: $e");
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Message deleted")),);
   }
 }

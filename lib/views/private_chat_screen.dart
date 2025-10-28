@@ -1,8 +1,5 @@
 import 'package:chat_app/constants/app_colors.dart';
-
-// import 'package:chat_app/view_model/app_brain.dart'; // No longer needed for messages
 import 'package:chat_app/widgets/chat_bubble.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Add this import
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/message_model.dart';
@@ -37,9 +34,9 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.chatBackground,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        elevation: 1,
+        elevation: 0,
         backgroundColor: AppColors.appBarBackground,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -49,8 +46,8 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
           children: [
             CircleAvatar(
               radius: 18,
-              backgroundColor: Colors.grey.shade300,
-              child: Text(widget.userModel.username[0].toUpperCase()),
+              backgroundColor: AppColors.brightGreen,
+              child: Text(widget.userModel.username[0].toUpperCase(), style: TextStyle(color: AppColors.background, fontWeight: FontWeight.bold),),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -68,7 +65,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                   Text(
                     "Online", // You might want to get real-time status as well
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.grey.shade400,
                       fontSize: 12,
                     ),
                   ),
@@ -102,10 +99,10 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No messages yet."));
+                  return Center(child: Text("No messages yet.", style: TextStyle(color: Colors.grey.shade400)));
                 }
                 if (snapshot.hasError) {
-                  return const Center(child: Text("Something went wrong."));
+                  return Center(child: Text("Something went wrong.", style: TextStyle(color: Colors.red.shade300)));
                 }
                 final messages = snapshot.data!;
                 return ListView.builder(
@@ -116,45 +113,43 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                   ),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    return ChatBubble(model: messages[index]);
+                    return ChatBubble(model: messages[index],chatId: widget.chatId);
                   },
                 );
               },
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, -2),
-                ),
-              ],
+              color: AppColors.chatBubbleBackground,
             ),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: messageController,
-                    cursorColor: AppColors.appBarBackground,
+                    cursorColor: AppColors.brightGreen,
+                    style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                       hintText: "Enter message",
+                      hintStyle: TextStyle(color: Colors.grey.shade500),
+                      filled: true,
+                      fillColor: AppColors.background,
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
+                        borderSide: BorderSide(color: AppColors.background),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.grey.shade500),
+                        borderSide: BorderSide(color: AppColors.brightGreen),
                       ),
                       prefixIcon: IconButton(
                         onPressed: () {},
                         icon: Icon(
                           Icons.emoji_emotions_outlined,
-                          color: Colors.grey.shade600,
+                          color: Colors.grey.shade400,
                         ),
                       ),
                       suffixIcon: Row(
@@ -163,7 +158,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                           IconButton(
                             icon: Icon(
                               Icons.attach_file,
-                              color: Colors.grey.shade600,
+                              color: Colors.grey.shade400,
                             ),
                             onPressed: () {},
                           ),
@@ -171,7 +166,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                             onPressed: () {},
                             icon: Icon(
                               Icons.camera_alt,
-                              color: Colors.grey.shade600,
+                              color: Colors.grey.shade400,
                             ),
                           ),
                         ],
@@ -181,12 +176,16 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  decoration: const BoxDecoration(
+                  decoration:  BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFF075E54),
+                    gradient: LinearGradient(
+                      colors: [AppColors.brightGreen, AppColors.endGradient],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
                   ),
                   child: IconButton(
-                    onPressed: () async {
+                    onPressed: () {
                       if (messageController.text.isNotEmpty) {
                         final message = MessageModel(
                           id: UniqueKey().toString(),
@@ -197,11 +196,11 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                               "User",
                           timeStamp: DateTime.now(),
                         );
-                        await ChatService.sendMessage(message, widget.chatId);
+                        ChatService.sendMessage(message, widget.chatId);
                         messageController.clear();
                       }
                     },
-                    icon: const Icon(Icons.send, color: Colors.white, size: 20),
+                    icon: Icon(Icons.send, color: AppColors.background, size: 20),
                   ),
                 ),
               ],

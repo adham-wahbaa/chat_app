@@ -5,16 +5,48 @@ import 'package:chat_app/views/sign_in_screen.dart';
 import 'package:chat_app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   SignUpScreen({super.key});
 
-  final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
+  late TextEditingController _userNameController ;
+
+  late TextEditingController _emailController ;
+
+  late TextEditingController _passwordController ;
+
+  late TextEditingController _confirmPasswordController ;
+  late AnimationController  _animationController;
+  Animation<double>? _animation;
 
   final  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+@override
+  void initState() {
+_userNameController = TextEditingController();
+_emailController = TextEditingController();
+_passwordController = TextEditingController();
+_confirmPasswordController = TextEditingController();
+  _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 500),
+  );
+  _animation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _animationController ,curve:Curves.easeIn )
+  );
+  _animationController.forward();
+    super.initState();
+  }
+  dispose() {
+_userNameController.dispose();
+_emailController.dispose();
+_passwordController.dispose();
+_confirmPasswordController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,64 +59,60 @@ class SignUpScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 50),
                 // WhatsApp-inspired logo/icon area
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF25D366),
-                    borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF25D366).withOpacity(0.3),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.person_add_rounded,
-                    size: 50,
-                    color: Colors.white,
+                ScaleTransition(
+                  scale: _animation!,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: AppColors.brightGreen,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.brightGreen.withOpacity(0.3),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.person_add_rounded,
+                      size: 50,
+                      color: AppColors.background,
+                    ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 10),
-                
+
                 // Welcome text
                 const Text(
                   'Join Our Community!',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1F2937),
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Create your account to start chatting with friends',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF6B7280),
+                    color: Colors.grey.shade400,
                     height: 1.5,
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Form container
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.chatBubbleBackground,
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 20,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
                   ),
                   child: Form(
                   key: formKey,
@@ -97,13 +125,14 @@ class SignUpScreen extends StatelessWidget {
                           prefixIcon: Icons.person_outline,
                          validator: (p0) {
                            if(p0!.length < 5){
-                            return "Username can't be less than 5 characters";
+                            return "Username can\'t be less than 5 characters";
                            }
+                           return null;
                          },
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         CustomTextField(
                           hintText: 'Enter your email',
                           labelText: 'Email',
@@ -114,11 +143,12 @@ class SignUpScreen extends StatelessWidget {
                            if(!p0!.contains("@")){
                             return "Invalid email";
                            }
+                           return null;
                          },
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         CustomTextField(
                           hintText: 'Enter your password',
                           labelText: 'Password',
@@ -135,9 +165,9 @@ class SignUpScreen extends StatelessWidget {
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         CustomTextField(
                           hintText: 'Confirm your password',
                           labelText: 'Confirm Password',
@@ -154,17 +184,18 @@ class SignUpScreen extends StatelessWidget {
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 32),
-                        
+
                         // Sign up button
                         Container(
                           width: double.infinity,
                           height: 56,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+
                               colors: [
                               AppColors.brightGreen,
                               AppColors.endGradient
@@ -172,7 +203,7 @@ class SignUpScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF25D366).withOpacity(0.3),
+                                color: AppColors.brightGreen.withOpacity(0.3),
                                 blurRadius: 12,
                                 offset: const Offset(0, 6),
                               ),
@@ -184,11 +215,11 @@ class SignUpScreen extends StatelessWidget {
                                 await AuthService.register(
                                   _emailController.text,
                                    _passwordController.text,
-                                    _userNameController.text
+                                    _userNameController.text,context
                                   );
 
-                                  Navigator.push(context, MaterialPageRoute(builder:(context) => EmailVerificationScreen(),));
-                                
+                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:(context) => EmailVerificationScreen(),), (route) => false,);
+
                               };
                             },
                             style: ElevatedButton.styleFrom(
@@ -198,12 +229,12 @@ class SignUpScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            child: const Text(
+                            child: Text(
                               'Create Account',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                                color: AppColors.background,
                               ),
                             ),
                           ),
@@ -212,17 +243,17 @@ class SignUpScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 30),
-                
+
                 // Sign in link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Already have an account? ',
                       style: TextStyle(
-                        color: Color(0xFF6B7280),
+                        color: Colors.grey.shade400,
                         fontSize: 16,
                       ),
                     ),
@@ -236,10 +267,10 @@ class SignUpScreen extends StatelessWidget {
                           (route) => false,
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         'Sign In',
                         style: TextStyle(
-                          color: Color(0xFF25D366),
+                          color: AppColors.brightGreen,
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                         ),
@@ -247,7 +278,7 @@ class SignUpScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 30),
               ],
             ),

@@ -23,7 +23,7 @@ class ActionButton extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF25D366).withOpacity(0.3),
+                              color: AppColors.brightGreen.withOpacity(0.3),
                               blurRadius: 12,
                               offset: const Offset(0, 6),
                             ),
@@ -43,7 +43,7 @@ class ActionButton extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: AppColors.background,
                             ),
                           ),
                         ),

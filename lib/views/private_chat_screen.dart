@@ -47,7 +47,13 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
             CircleAvatar(
               radius: 18,
               backgroundColor: AppColors.brightGreen,
-              child: Text(widget.userModel.username[0].toUpperCase(), style: TextStyle(color: AppColors.background, fontWeight: FontWeight.bold),),
+              child: Text(
+                widget.userModel.username[0].toUpperCase(),
+                style: TextStyle(
+                  color: AppColors.background,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -64,10 +70,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                   ),
                   Text(
                     "Online", // You might want to get real-time status as well
-                    style: TextStyle(
-                      color: Colors.grey.shade400,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
                   ),
                 ],
               ),
@@ -99,21 +102,33 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text("No messages yet.", style: TextStyle(color: Colors.grey.shade400)));
+                  return Center(
+                    child: Text(
+                      "No messages yet.",
+                      style: TextStyle(color: Colors.grey.shade400),
+                    ),
+                  );
                 }
                 if (snapshot.hasError) {
-                  return Center(child: Text("Something went wrong.", style: TextStyle(color: Colors.red.shade300)));
+                  return Center(
+                    child: Text(
+                      "Something went wrong.",
+                      style: TextStyle(color: Colors.red.shade300),
+                    ),
+                  );
                 }
                 final messages = snapshot.data!;
                 return ListView.builder(
-                  reverse: true,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
                     vertical: 8,
                   ),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    return ChatBubble(model: messages[index],chatId: widget.chatId);
+                    return ChatBubble(
+                      model: messages[index],
+                      chatId: widget.chatId,
+                    );
                   },
                 );
               },
@@ -121,9 +136,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-            decoration: BoxDecoration(
-              color: AppColors.chatBubbleBackground,
-            ),
+            decoration: BoxDecoration(color: AppColors.chatBubbleBackground),
             child: Row(
               children: [
                 Expanded(
@@ -132,7 +145,10 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                     cursorColor: AppColors.brightGreen,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 10.0,
+                        horizontal: 20.0,
+                      ),
                       hintText: "Enter message",
                       hintStyle: TextStyle(color: Colors.grey.shade500),
                       filled: true,
@@ -176,7 +192,7 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  decoration:  BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
                       colors: [AppColors.brightGreen, AppColors.endGradient],
@@ -200,7 +216,11 @@ class _PrivateChatScreenState extends State<PrivateChatScreen> {
                         messageController.clear();
                       }
                     },
-                    icon: Icon(Icons.send, color: AppColors.background, size: 20),
+                    icon: Icon(
+                      Icons.send,
+                      color: AppColors.background,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],

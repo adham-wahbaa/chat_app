@@ -56,7 +56,7 @@ class ChatService {
         .collection('chats')
         .doc(chatId)
         .collection('messages')
-        .orderBy('timeStamp', descending: true)
+        .orderBy('timeStamp')
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {

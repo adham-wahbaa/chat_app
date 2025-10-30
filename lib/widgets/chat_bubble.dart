@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:chat_app/constants/app_colors.dart';
 
 class ChatBubble extends StatefulWidget {
-  ChatBubble({super.key, required this.model,required this.chatId});
+  ChatBubble({super.key, required this.model, required this.chatId});
+
   final MessageModel model;
 
   final String chatId;
@@ -15,70 +16,93 @@ class ChatBubble extends StatefulWidget {
   State<ChatBubble> createState() => _ChatBubbleState();
 }
 
-class _ChatBubbleState extends State<ChatBubble> with SingleTickerProviderStateMixin {
-late final AnimationController _animationController;
-late final Animation<Offset> _animation;
-late final bool isMe;
+class _ChatBubbleState extends State<ChatBubble>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<Offset> _animation;
+  late final bool isMe;
 
-@override
+  @override
   void initState() {
-   isMe = FirebaseAuth.instance.currentUser!.uid == widget.model.senderId;
-  _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 500),
-  );
-_animation=Tween(begin: Offset(isMe ? 0.5 : -0.5, 0.0), end: const Offset(0, 0)).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutQuart));
-_animationController.forward();
+    isMe = FirebaseAuth.instance.currentUser!.uid == widget.model.senderId;
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _animation =
+        Tween(
+          begin: Offset(isMe ? 0.5 : -0.5, 0.0),
+          end: const Offset(0, 0),
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutQuart,
+          ),
+        );
+    _animationController.forward();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onLongPress: () {
         showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: AppColors.chatBubbleBackground,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                title: const Text(
-                  "Message Info",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: AppColors.chatBubbleBackground,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              title: const Text(
+                "Message Info",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Sent by: ${widget.model.senderName}",
-                        style: const TextStyle(color: Colors.white70)),
-                    const SizedBox(height: 8),
-                    Text("Sent at: ${widget.model.timeStamp.toLocal()}",
-                        style: const TextStyle(color: Colors.white70)),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("Close",
-                        style: TextStyle(color: AppColors.brightGreen)),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Sent by: ${widget.model.senderName}",
+                    style: const TextStyle(color: Colors.white70),
                   ),
-                  TextButton(
-                    onPressed: ()  async {
-                         await ChatService.deletemessage(widget.chatId, widget.model.id,context);
-                      Navigator.of(context).pop();
-
-                    },
-                    child: Text("delete",
-                        style: TextStyle(color: Colors.red)),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Sent at: ${widget.model.timeStamp.toLocal()}",
+                    style: const TextStyle(color: Colors.white70),
                   ),
+                  const SizedBox(height: 8),
                 ],
-              );
-            });
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "Close",
+                    style: TextStyle(color: AppColors.brightGreen),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await ChatService.deletemessage(
+                      widget.chatId,
+                      widget.model.id,
+                      context,
+                    );
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("delete", style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            );
+          },
+        );
       },
       child: SlideTransition(
         position: _animation,
@@ -105,7 +129,9 @@ _animationController.forward();
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: isMe ? AppColors.brightGreen : AppColors.chatBubbleBackground,
+                        color: isMe
+                            ? AppColors.brightGreen
+                            : AppColors.chatBubbleBackground,
                         borderRadius: BorderRadius.only(
                           topLeft: const Radius.circular(18),
                           topRight: const Radius.circular(18),

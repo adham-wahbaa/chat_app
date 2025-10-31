@@ -50,7 +50,5 @@ To get a local copy up and running, follow these simple steps.
 
 You can add screenshots of your application here to showcase the UI. For example:
 
-| Login Screen | Chat Screen |
-|--------------|-------------|
-| *Image 1*    | *Image 2*   |
+
 
